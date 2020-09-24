@@ -1,38 +1,75 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import axios from 'axios';
 import 'semantic-ui-css/semantic.min.css';
-import { Header, Icon, List } from 'semantic-ui-react';
+import { Container } from 'semantic-ui-react';
+import Navbar from './components/Navbar';
+import 'bootstrap/dist/css/bootstrap.css';
+import ActivityDashboard from './components/activities/dashboard/ActivityDashboard';
 
-class App extends Component {
-  state = {
-    values: [],
+const App = () => {
+  const [activities, setActivities] = useState([]);
+  const [selectedActivity, setSelectedActivity] = useState(null);
+  const [editMode, setEditMode] = useState(false);
+
+  const handleSelectActivity = (id) => {
+    setSelectedActivity(activities.filter((a) => a.id === id)[0]);
+    setEditMode(false);
   };
 
-  componentDidMount = () => {
-    axios.get('http://localhost:5000/api/values').then((response) => {
-      this.setState({ values: response.data });
+  useEffect(() => {
+    axios.get('http://localhost:5000/api/activities').then((response) => {
+      let activities = [];
+      response.data.forEach((activity) => {
+        activity.date = activity.date.slice(0, 19);
+        activities.push(activity);
+      });
+      setActivities(activities);
     });
+  }, []); //Empty array means the function is only called once on the initial render
+
+  const handleOpenCreateForm = () => {
+    setSelectedActivity(null);
+    setEditMode(true);
   };
 
-  render() {
-    const { values } = this.state;
-    return (
-      <div>
-        <Header as="h2">
-          <Icon name="plug" />
-          <Header.Content>Uptime Guarantee</Header.Content>
-        </Header>
-        <List>
-          {values.map((value) => {
-            return <List.Item key={value.id}>{value.name}</List.Item>;
-          })}
-        </List>
+  const handleCreateActivity = (activity) => {
+    setActivities([...activities, activity]);
+    setSelectedActivity(activity);
+    setEditMode(false);
+  };
 
-        <ul></ul>
-      </div>
-    );
-  }
-}
+  const handlEditActivity = (activity) => {
+    setActivities([
+      ...activities.filter((a) => a.id !== activity.id),
+      activity,
+    ]);
+    setSelectedActivity(activity);
+    setEditMode(false);
+  };
+
+  const handleDeleteActivity = (id) => {
+    setActivities([...activities.filter((a) => a.id !== id)]);
+  };
+
+  return (
+    <>
+      <Navbar openCreateForm={handleOpenCreateForm} />
+      <Container style={{ marginTop: '7em' }}>
+        <ActivityDashboard
+          activities={activities}
+          selectActivity={handleSelectActivity}
+          selectedActivity={selectedActivity}
+          editMode={editMode}
+          setEditMode={setEditMode}
+          setSelectedActivity={setSelectedActivity}
+          createActivity={handleCreateActivity}
+          editActivity={handlEditActivity}
+          deleteActivity={handleDeleteActivity}
+        />
+      </Container>
+    </>
+  );
+};
 
 export default App;
