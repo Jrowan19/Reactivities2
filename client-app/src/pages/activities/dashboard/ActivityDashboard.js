@@ -14,6 +14,8 @@ const ActivityDashboard = ({
   createActivity,
   editActivity,
   deleteActivity,
+  submitting,
+  target,
 }) => {
   return (
     <Grid>
@@ -22,6 +24,8 @@ const ActivityDashboard = ({
           activities={activities}
           selectActivity={selectActivity}
           deleteActivity={deleteActivity}
+          submitting={submitting}
+          target={target}
         />
       </Grid.Column>
       <Grid.Column width={6}>
@@ -39,6 +43,7 @@ const ActivityDashboard = ({
             createActivity={createActivity}
             editActivity={editActivity}
             setSelectedActivity={setSelectedActivity}
+            submitting={submitting}
             key={(selectedActivity && selectedActivity.id) || 0}
           />
         )}

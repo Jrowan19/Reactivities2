@@ -9,6 +9,7 @@ const ActivityForm = ({
   createActivity,
   editActivity,
   setSelectedActivity,
+  submitting,
 }) => {
   const initialiseForm = () => {
     if (initialFormState) {
@@ -86,7 +87,13 @@ const ActivityForm = ({
           value={activity.venue}
           onChange={handleInputChange}
         />
-        <Button floated="right" positive type="submit" content="Submit" />
+        <Button
+          loading={submitting}
+          floated="right"
+          positive
+          type="submit"
+          content="Submit"
+        />
         <Button
           onClick={() => setEditMode(false)}
           floated="right"
