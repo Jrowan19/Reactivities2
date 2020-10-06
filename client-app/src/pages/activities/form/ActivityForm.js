@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Segment, Form, Button } from 'semantic-ui-react';
 import { v4 as uuid } from 'uuid';
-import swal from 'sweetalert';
 
 const ActivityForm = ({
   setEditMode,
